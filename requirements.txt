@@ -13,19 +13,11 @@ python-jose[cryptography]==3.3.0
 httpx==0.27.2
 aiofiles==24.1.0
 python-dotenv==1.0.1
-
-# ML — install PyTorch FIRST separately:
-# pip install torch==2.6.0 torchvision==0.21.0
-torch>=2.6.0
-torchvision>=0.21.0
+torch==2.6.0+cpu
+torchvision==0.21.0+cpu
 transformers==4.46.3
 huggingface-hub==0.26.2
-
-# Face detection — mediapipe replaces facenet-pytorch (no torch version conflicts)
 mediapipe==0.10.18
-
 scipy==1.14.1
 tqdm==4.67.1
-
-# Step 4 — PDF report generation
 reportlab==4.2.5

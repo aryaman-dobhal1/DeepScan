@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libmagic1 \
     libmagic-dev \
@@ -9,12 +8,13 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copy and install Python dependencies
 COPY requirements.txt .
+
+RUN pip install --no-cache-dir torch==2.6.0+cpu torchvision==0.21.0+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
 COPY . .
 
-# Run the app
 CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
