@@ -1,11 +1,11 @@
-{
+{{
   "name": "deepscan",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node node_modules/vite/bin/vite.js build",
+    "build": "chmod +x node_modules/.bin/vite && npx vite build",
     "preview": "node node_modules/vite/bin/vite.js preview"
   },
   "dependencies": {
