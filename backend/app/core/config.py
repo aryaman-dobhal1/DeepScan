@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///./deepscan.db"
     
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:5173,https://your-app.vercel.app"
+    ALLOWED_ORIGINS: str = "http://localhost:5173,https://deepscan-2px3.onrender.com"
     
     @property
     def origins_list(self) -> List[str]:
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     MODEL_DIR: str = "./models"
     EFFICIENTNET_WEIGHTS: str = "./models/efficientnet_b7_deepfake.pth"
     XCEPTION_WEIGHTS: str = "./models/xception_deepfake.pth"
-    USE_MOCK_MODEL: bool = True  # Set False once real weights are downloaded
+    USE_MOCK_MODEL: bool = True
     
     # File uploads
     MAX_FILE_SIZE_MB: int = 100
