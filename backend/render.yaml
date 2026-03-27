@@ -2,10 +2,11 @@ services:
   - type: web
     name: deepscan-backend
     runtime: python
+    rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: USE_MOCK_MODEL
-        value: false
+        value: "true"
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: "3.11.0"
