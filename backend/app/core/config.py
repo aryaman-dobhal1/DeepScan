@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite+aiosqlite:///./deepscan.db"
     
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:5173,https://deepscan-2px3.onrender.com"
+    ALLOWED_ORIGINS: str = "http://localhost:5173,https://deepscan-2px3.onrender.com,https://deep-scan-nu.vercel.app"
     
     @property
     def origins_list(self) -> List[str]:
