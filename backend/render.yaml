@@ -6,7 +6,7 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: USE_MOCK_MODEL
-        value: "true"
-      - key: PYTHON_VERSION
-        value: "3.11.0"
+  - key: PYTHON_VERSION
+    value: "3.11.0"
+  - key: USE_MOCK_MODEL
+    value: "true"
