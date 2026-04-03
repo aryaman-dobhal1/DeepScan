@@ -3,9 +3,9 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime, timedelta
-import jwt
+from jose import jwt
+from jose.exceptions import ExpiredSignatureError, JWTError
 import bcrypt
-
 from app.core.database import get_db
 from app.core.schemas import UserCreate, UserLogin, UserResponse, Token
 from app.models.user import User
@@ -18,21 +18,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
-
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-
 def verify_password(plain: str, hashed: str) -> bool:
     return bcrypt.checkpw(plain.encode(), hashed.encode())
-
 
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
@@ -43,9 +39,9 @@ async def get_current_user(
         user_id: int = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.InvalidTokenError:
+    except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
     result = await db.execute(select(User).where(User.id == user_id))
@@ -53,7 +49,6 @@ async def get_current_user(
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return user
-
 
 @router.post("/signup", response_model=Token, status_code=201)
 async def signup(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
@@ -74,7 +69,6 @@ async def signup(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     token = create_access_token({"sub": user.id, "email": user.email})
     return {"access_token": token, "token_type": "bearer", "user": {"id": user.id, "name": user.name, "email": user.email}}
 
-
 @router.post("/login", response_model=Token)
 async def login(form_data: UserLogin, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == form_data.email))
@@ -85,11 +79,9 @@ async def login(form_data: UserLogin, db: AsyncSession = Depends(get_db)):
     token = create_access_token({"sub": user.id, "email": user.email})
     return {"access_token": token, "token_type": "bearer", "user": {"id": user.id, "name": user.name, "email": user.email}}
 
-
 @router.get("/me", response_model=UserResponse)
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
-
 
 @router.post("/logout")
 async def logout():
